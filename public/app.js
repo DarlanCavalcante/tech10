@@ -98,22 +98,37 @@ function createProductCard(product) {
     const stockClass = product.stock === 0 ? 'out-of-stock' : (product.stock < 5 ? 'low-stock' : '');
     const stockText = product.stock === 0 ? 'Fora de estoque' : `Estoque: ${product.stock} unidades`;
     
+    // Escape HTML to prevent XSS
+    const escapeHtml = (text) => {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+    
     card.innerHTML = `
-        <img src="${product.image}" alt="${product.name}" class="product-image">
+        <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" class="product-image">
         <div class="product-info">
-            <h3 class="product-name">${product.name}</h3>
-            <p class="product-description">${product.description}</p>
+            <h3 class="product-name">${escapeHtml(product.name)}</h3>
+            <p class="product-description">${escapeHtml(product.description)}</p>
             <p class="product-price">R$ ${product.price.toFixed(2)}</p>
             <p class="product-stock ${stockClass}">${stockText}</p>
             <button 
                 class="btn btn-primary add-to-cart-btn" 
-                onclick="addToCart(${product.id}, event)"
+                data-product-id="${product.id}"
                 ${product.stock === 0 ? 'disabled' : ''}
             >
                 ${product.stock === 0 ? 'Indisponível' : 'Adicionar ao Carrinho'}
             </button>
         </div>
     `;
+    
+    // Add event listener instead of inline onclick
+    const button = card.querySelector('.add-to-cart-btn');
+    if (button && !button.disabled) {
+        button.addEventListener('click', (event) => {
+            addToCart(product.id, event);
+        });
+    }
     
     return card;
 }
@@ -189,20 +204,36 @@ function displayCartItems() {
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
         
+        // Escape HTML to prevent XSS
+        const escapeHtml = (text) => {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        };
+        
         cartItem.innerHTML = `
             <div class="cart-item-info">
-                <div class="cart-item-name">${item.name}</div>
+                <div class="cart-item-name">${escapeHtml(item.name)}</div>
                 <div class="cart-item-price">R$ ${item.price.toFixed(2)} x ${item.quantity} = R$ ${(item.price * item.quantity).toFixed(2)}</div>
             </div>
             <div class="cart-item-actions">
                 <div class="quantity-controls">
-                    <button class="quantity-btn" onclick="decreaseQuantity(${item.id})">-</button>
+                    <button class="quantity-btn decrease-btn" data-product-id="${item.id}">-</button>
                     <span>${item.quantity}</span>
-                    <button class="quantity-btn" onclick="increaseQuantity(${item.id})">+</button>
+                    <button class="quantity-btn increase-btn" data-product-id="${item.id}">+</button>
                 </div>
-                <button class="remove-btn" onclick="removeFromCart(${item.id})">Remover</button>
+                <button class="remove-btn" data-product-id="${item.id}">Remover</button>
             </div>
         `;
+        
+        // Add event listeners instead of inline onclick
+        const decreaseBtn = cartItem.querySelector('.decrease-btn');
+        const increaseBtn = cartItem.querySelector('.increase-btn');
+        const removeBtn = cartItem.querySelector('.remove-btn');
+        
+        decreaseBtn.addEventListener('click', () => decreaseQuantity(item.id));
+        increaseBtn.addEventListener('click', () => increaseQuantity(item.id));
+        removeBtn.addEventListener('click', () => removeFromCart(item.id));
         
         cartItemsDiv.appendChild(cartItem);
     });

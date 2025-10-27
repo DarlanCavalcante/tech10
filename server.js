@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
@@ -8,7 +7,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(express.static('public'));
 
 // In-memory data storage
@@ -57,6 +56,7 @@ let products = [
 
 let orders = [];
 let nextOrderId = 1;
+let nextProductId = 6; // Next available product ID
 
 // API Routes
 
@@ -83,7 +83,7 @@ app.post('/api/products', (req, res) => {
   }
 
   const newProduct = {
-    id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
+    id: nextProductId++,
     name,
     description: description || '',
     price: parseFloat(price),
