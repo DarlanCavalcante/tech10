@@ -45,7 +45,7 @@ contactForm.addEventListener('submit', (e) => {
     const message = formData.get('message');
     
     // Show success message
-    alert(`Obrigado ${name}! Sua mensagem foi enviada com sucesso. Em breve entraremos em contato através do e-mail ${email}.`);
+    showToast(`Obrigado ${name}! Sua mensagem foi enviada com sucesso. Em breve entraremos em contato através do e-mail ${email}.`, 'success');
     
     // Reset form
     contactForm.reset();
@@ -75,7 +75,6 @@ document.querySelectorAll('.product-card, .about-content, .contact-content').for
 });
 
 // Add scroll effect to navbar
-let lastScroll = 0;
 const navbar = document.querySelector('header');
 
 window.addEventListener('scroll', () => {
@@ -86,14 +85,66 @@ window.addEventListener('scroll', () => {
     } else {
         navbar.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
     }
-    
-    lastScroll = currentScroll;
 });
+
+// Toast notification function
+function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: ${type === 'success' ? '#10b981' : '#2563eb'};
+        color: white;
+        padding: 16px 24px;
+        border-radius: 8px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+        max-width: 400px;
+        font-weight: 500;
+    `;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+// Add CSS animations for toast
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
 
 // Add click effect to product cards
 document.querySelectorAll('.product-card').forEach(card => {
     card.addEventListener('click', () => {
         const productName = card.querySelector('h3').textContent;
-        alert(`Você selecionou: ${productName}\n\nEm breve, você poderá adicionar produtos ao carrinho!`);
+        showToast(`Você selecionou: ${productName}. Em breve, você poderá adicionar produtos ao carrinho!`, 'info');
     });
 });
