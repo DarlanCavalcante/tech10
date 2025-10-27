@@ -13,6 +13,13 @@ let cartItemsDiv;
 let cartCountSpan;
 let cartTotalSpan;
 
+// Utility function to escape HTML and prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // Initialize app
 document.addEventListener('DOMContentLoaded', () => {
     initializeDOM();
@@ -97,13 +104,6 @@ function createProductCard(product) {
     
     const stockClass = product.stock === 0 ? 'out-of-stock' : (product.stock < 5 ? 'low-stock' : '');
     const stockText = product.stock === 0 ? 'Fora de estoque' : `Estoque: ${product.stock} unidades`;
-    
-    // Escape HTML to prevent XSS
-    const escapeHtml = (text) => {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    };
     
     card.innerHTML = `
         <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" class="product-image">
@@ -203,13 +203,6 @@ function displayCartItems() {
     cart.forEach(item => {
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
-        
-        // Escape HTML to prevent XSS
-        const escapeHtml = (text) => {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        };
         
         cartItem.innerHTML = `
             <div class="cart-item-info">
