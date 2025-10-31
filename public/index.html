@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech10 - Loja de Tecnologia</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🛒 Tech10</h1>
+            <p class="subtitle">Sua loja de tecnologia</p>
+            <button id="cart-btn" class="cart-btn">
+                Carrinho (<span id="cart-count">0</span>)
+            </button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="products-section">
+            <h2>Produtos</h2>
+            <div id="loading">Carregando produtos...</div>
+            <div id="products-grid" class="products-grid"></div>
+        </section>
+
+        <!-- Modal do Carrinho -->
+        <div id="cart-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Seu Carrinho</h2>
+                <div id="cart-items"></div>
+                <div class="cart-total">
+                    <strong>Total: R$ <span id="cart-total">0.00</span></strong>
+                </div>
+                <div class="cart-actions">
+                    <button id="clear-cart" class="btn btn-secondary">Limpar Carrinho</button>
+                    <button id="checkout-btn" class="btn btn-primary">Finalizar Compra</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Checkout -->
+        <div id="checkout-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Finalizar Compra</h2>
+                <form id="checkout-form">
+                    <div class="form-group">
+                        <label for="customer-name">Nome Completo:</label>
+                        <input type="text" id="customer-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer-email">E-mail:</label>
+                        <input type="email" id="customer-email" required>
+                    </div>
+                    <div class="checkout-summary">
+                        <h3>Resumo do Pedido</h3>
+                        <div id="checkout-items"></div>
+                        <div class="checkout-total">
+                            <strong>Total: R$ <span id="checkout-total">0.00</span></strong>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-checkout">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Confirmar Pedido</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal de Sucesso -->
+        <div id="success-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="success-message">
+                    <h2>✅ Pedido Realizado com Sucesso!</h2>
+                    <p>Pedido #<span id="order-id"></span></p>
+                    <p>Obrigado pela sua compra!</p>
+                    <button class="btn btn-primary" id="close-success">Continuar Comprando</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Tech10 - Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
